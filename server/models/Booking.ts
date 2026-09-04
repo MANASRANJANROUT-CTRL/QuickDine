@@ -9,7 +9,7 @@ export interface IBooking extends Document{
   guests: number;
   occasion?: string;
   specialRequests?: string;
-  status: "Pending" | "Confirmed" | "Completed" ;
+  status: "Pending" | "Confirmed" | "Completed"  |"Cancelled";
   bookingId: string;
   createdAt: Date;
   updatedAt: Date;
