@@ -1,4 +1,4 @@
-import {model, Schema} from 'mongoose'
+import {Types, model, Schema} from 'mongoose'
 
 export interface Iuser extends Document{
   name: string; 
@@ -8,6 +8,7 @@ export interface Iuser extends Document{
   role: "user" | "admin" | "owner";
   createdAt: Date;
   updatedAt: Date;
+   _id: Types.ObjectId;
 }
 
 const UserSchema = new Schema(
