@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { dummyUser } from "../assets/assets.js";
+import api from "../lib/api.js";
+import toast from "react-hot-toast";
 
 interface UserType {
     _id: string;
@@ -36,21 +37,45 @@ export const AppContextProvider = ({ children }: Props) => {
     const [isAuthModalOpen, setAuthModalOpen] = useState<boolean>(false);
 
     const login = async (email: string, password: string): Promise<boolean> => {
-        console.log(email, password);
-        setToken(dummyUser.token);
-        setUser(dummyUser as any);
-        setToken(dummyUser.token);
-        localStorage.setItem("token", dummyUser.token);
-        return true;
+        try {
+            setLoading(true);
+            const res = await api.post("/auth/login", { email, password });
+            const { token: UserToken, ...UserData } = res.data;
+
+            localStorage.setItem("token", UserToken);
+            setToken(UserToken);
+            setUser(UserData);
+            toast.success(`Welcome Back, ${UserData.name}`);
+            return true;
+
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message);
+            return false;
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     const register = async (name: string, email: string, password: string, phone?: string, role?: string): Promise<boolean> => {
-        console.log(name, email, password, phone, role);
-        setToken(dummyUser.token);
-        setUser(dummyUser as any);
-        setToken(dummyUser.token);
-        localStorage.setItem("token", dummyUser.token);
-        return true;
+        try {
+            setLoading(true);
+            const res = await api.post("/auth/register", { name, email, password, phone, role });
+            const { token: UserToken, ...UserData } = res.data;
+
+            localStorage.setItem("token", UserToken);
+            setToken(UserToken);
+            setUser(UserData);
+            toast.success(`Welcome to QuickDine club!`);
+            return true;
+
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || error?.message);
+            return false;
+
+        } finally {
+            setLoading(false);
+        }
     };
 
     const logout = () => {
@@ -58,15 +83,27 @@ export const AppContextProvider = ({ children }: Props) => {
         setToken(null);
         setUser(null);
         window.location.href = "/";
+        // no hard reload — React will handle re-render;
+        // use useNavigate() in a component if you need to redirect to "/"
     };
 
     useEffect(() => {
         const loadUser = async () => {
-            if (token) {
-                setUser(dummyUser as any);
+            if (!token) {
+                setLoading(false);
+                return;
             }
-            setLoading(false);
+            try {
+                const res = await api.get("/auth/me");
+                setUser(res.data);
+            } catch (error: any) {
+                toast.error(error?.response?.data?.message || error?.message);
+                logout();
+            } finally {
+                setLoading(false);
+            }
         };
+
         loadUser();
     }, [token]);
 

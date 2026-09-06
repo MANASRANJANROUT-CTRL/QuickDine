@@ -2,7 +2,7 @@ import { AuthRequest } from "../middlewares/auth.js";
 import { Response } from "express";
 import { Restaurant } from "../models/Restaurant.js";
 import { Booking } from "../models/Booking.js";
-
+import crypto from "crypto";
 // Create new booking
 // POST /api/bookings
 // @access Private
@@ -79,16 +79,17 @@ export const createBooking = async (
     }
 
     // Create booking
-    const booking = await Booking.create({
-      user: req.user._id,
-      restaurant: restaurantId,
-      date: new Date(date),
-      time,
-      guests: requestedGuests,
-      occasion,
-      specialRequests,
-      status: "Confirmed",
-    });
+const booking = await Booking.create({
+  bookingId: `GR-${crypto.randomBytes(4).toString("hex").toUpperCase()}`,
+  user: req.user._id,
+  restaurant: restaurantId,
+  date: new Date(date),
+  time,
+  guests: requestedGuests,
+  occasion,
+  specialRequests,
+  status: "Confirmed",
+});
 
     // Populate restaurant information
     const populatedBooking = await booking.populate(
