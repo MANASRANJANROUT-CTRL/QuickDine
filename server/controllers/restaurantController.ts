@@ -10,7 +10,7 @@ import { Booking } from '../models/Booking.js';
 export const getRestaurants = async (req: Request, res: Response): Promise<void> => {
 
   try {
-    const {search, location, priceRange, rating, sort} = req.query;
+    const {search, location, priceRange, rating, sort, cuisine} = req.query;
 
     //Build Query Object
     const queryObj: any = {status: "Approved"};
@@ -26,6 +26,11 @@ export const getRestaurants = async (req: Request, res: Response): Promise<void>
     if(priceRange){
       const Prices = Array.isArray(priceRange) ? priceRange : [priceRange];
       queryObj.priceRange = {$in: Prices};
+    }
+
+    if(cuisine){
+      const Cuisines = Array.isArray(cuisine) ? cuisine : [cuisine];
+      queryObj.cuisine = {$in: Cuisines};
     }
 
     if(rating){
@@ -49,9 +54,9 @@ export const getRestaurants = async (req: Request, res: Response): Promise<void>
     const restaurant = await Restaurant.find(queryObj).sort(sortOption);
     res.json(restaurant);
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(400).json({ message: 'error.message' });
+    res.status(400).json({ message: error.message });
   }
 }
 
@@ -64,10 +69,11 @@ export const getFeaturedRestaurants = async (req: Request, res: Response): Promi
       $or: [{featured:true}, {exclusive: true}]
     }).limit(6)
      
+    res.json(featured);
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Get Featuired Restaurants Error:", error);
-    res.status(500).json({ message: 'error.message' });
+    res.status(500).json({ message: error.message });
   }
 }
 
@@ -155,8 +161,8 @@ export const getRestaurantAvailability = async (req: Request, res: Response): Pr
 
     res.json( availability)
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(400).json({ message: 'error.message' });
+    res.status(400).json({ message: error.message });
   }
 }

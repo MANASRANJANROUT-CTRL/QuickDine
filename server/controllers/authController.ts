@@ -34,12 +34,12 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
         // create user
         const user = await User.create({
-          name, 
+         name,
           email,
           password: hashedPassword,
-          phone,
+           phone: phone?.trim() || undefined,
           role
-        })
+        });
 
         if (user) {
             res.status(201).json({

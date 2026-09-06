@@ -6,7 +6,7 @@ interface AdminApprovalsProps {
     pendingRestaurants: any[];
     otherRestaurants: any[];
     btnLoading: string | null;
-    onApproveStatus: (restaurantId: string, status: "approved" | "rejected") => Promise<void>;
+    onApproveStatus: (restaurantId: string, status: "Approved" | "Rejected") => Promise<void>;
 }
 
 export default function AdminApprovals({ pendingRestaurants, otherRestaurants, btnLoading, onApproveStatus }: AdminApprovalsProps) {
@@ -52,14 +52,14 @@ export default function AdminApprovals({ pendingRestaurants, otherRestaurants, b
                                 <div className="flex gap-2 shrink-0 w-full md:w-auto justify-end">
                                     <button
                                         disabled={btnLoading === r._id}
-                                        onClick={() => onApproveStatus(r._id, "approved")}
+                                        onClick={() => onApproveStatus(r._id, "Approved")}
                                         className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-[9px] font-medium tracking-wider uppercase transition-colors rounded-sm cursor-pointer disabled:opacity-50"
                                     >
                                         Approve
                                     </button>
                                     <button
                                         disabled={btnLoading === r._id}
-                                        onClick={() => onApproveStatus(r._id, "rejected")}
+                                        onClick={() => onApproveStatus(r._id, "Rejected")}
                                         className="px-4 py-2 bg-error hover:bg-error/85 text-white text-[9px] font-medium tracking-wider uppercase transition-colors rounded-sm cursor-pointer disabled:opacity-50"
                                     >
                                         Reject
@@ -103,7 +103,7 @@ export default function AdminApprovals({ pendingRestaurants, otherRestaurants, b
                                         <td className="p-4 text-right space-x-3">
                                             <span
                                                 className={`inline-block py-0.5 px-2 text-[9px] font-medium tracking-wider uppercase rounded-sm ${
-                                                    r.status === "approved"
+                                                    r.status === "Approved"
                                                         ? "bg-green-100 text-green-800"
                                                         : "bg-error-container text-on-error-container"
                                                 }`}
@@ -111,16 +111,16 @@ export default function AdminApprovals({ pendingRestaurants, otherRestaurants, b
                                                 {r.status}
                                             </span>
 
-                                            {r.status === "approved" ? (
+                                            {r.status === "Approved" ? (
                                                 <button
-                                                    onClick={() => onApproveStatus(r._id, "rejected")}
+                                                    onClick={() => onApproveStatus(r._id, "Rejected")}
                                                     className="text-error hover:underline text-[10px] uppercase font-medium cursor-pointer"
                                                 >
                                                     Suspend
                                                 </button>
                                             ) : (
                                                 <button
-                                                    onClick={() => onApproveStatus(r._id, "approved")}
+                                                    onClick={() => onApproveStatus(r._id, "Approved")}
                                                     className="text-green-600 hover:underline text-[10px] uppercase font-medium cursor-pointer"
                                                 >
                                                     Re-Approve
